@@ -1,0 +1,178 @@
+.status-indicator {
+    position: relative;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.status-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.status-summary:hover {
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.status-icon {
+    font-size: 16px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-indicator.healthy .status-icon {
+    animation: none;
+}
+
+.status-indicator.degraded .status-icon {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-indicator.down .status-icon {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.status-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.expand-icon {
+    margin-left: auto;
+    font-size: 10px;
+    color: #999;
+}
+
+.status-details {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    min-width: 250px;
+    z-index: 1000;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 300px;
+    }
+}
+
+.service-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 12px;
+}
+
+.service-name {
+    color: #666;
+    font-weight: 500;
+}
+
+.service-value {
+    font-weight: 600;
+}
+
+.service-value.ok {
+    color: #4caf50;
+}
+
+.service-value.error {
+    color: #f44336;
+}
+
+.last-check {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.refresh-button, .restart-button {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.refresh-button {
+    background: #f5f5f5;
+}
+
+.refresh-button:hover {
+    background: #e8e8e8;
+}
+
+.restart-button {
+    background: #fff3e0;
+    border-color: #ff9800;
+    color: #e65100;
+}
+
+.restart-button:hover {
+    background: #ffe0b2;
+    border-color: #f57c00;
+}
+
+.status-indicator.checking {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #999;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .status-indicator {
+        top: 5px;
+        right: 5px;
+        min-width: 150px;
+    }
+    
+    .status-text {
+        font-size: 11px;
+    }
+}
+

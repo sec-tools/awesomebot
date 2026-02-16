@@ -1,0 +1,149 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: awesomebot-ollama
+    ports:
+      - "11434:11434"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_NUM_PARALLEL=4        # Allow 4 parallel requests
+      - OLLAMA_MAX_LOADED_MODELS=1   # Keep only 1 model loaded
+      - OLLAMA_KEEP_ALIVE=-1         # Keep model loaded indefinitely
+      - OLLAMA_FLASH_ATTENTION=1     # Enable flash attention (faster)
+      - OLLAMA_KV_CACHE_TYPE=f16     # Use FP16 for KV cache
+      - OLLAMA_GPU_OVERHEAD=0        # Minimize GPU overhead
+      - CUDA_VISIBLE_DEVICES=0       # Use first GPU
+    restart: unless-stopped
+    networks:
+      - awesomebot
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 12G
+        reservations:
+          memory: 6G
+          # Uncomment below for GPU support (requires nvidia-docker)
+          # devices:
+          #   - driver: nvidia
+          #     count: 1
+          #     capabilities: [gpu]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: awesomebot-backend
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # Ollama connection
+      - OLLAMA_HOST=http://ollama:11434
+      - DEFAULT_MODEL=qwen2.5:7b
+      
+      # Database
+      - DATABASE_URL=sqlite+aiosqlite:///./data/awesomebot.db
+      
+      # Performance tuning
+      - CHUNK_SIZE=500
+      - CHUNK_OVERLAP=50
+      - MAX_DOCS=3
+      - CODE_TIMEOUT=30
+      
+      # Python optimizations
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONOPTIMIZE=1
+      
+      # Memory management
+      - MALLOC_TRIM_THRESHOLD_=65536
+      - MALLOC_MMAP_THRESHOLD_=65536
+    volumes:
+      - backend_data:/app/data
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped  # Restart unless explicitly stopped
+    networks:
+      - awesomebot
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3  # Fail faster to trigger restart
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 1536M
+        reservations:
+          cpus: '1'
+          memory: 768M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: awesomebot-frontend
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped  # Restart unless explicitly stopped
+    networks:
+      - awesomebot
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3  # Fail faster to trigger restart
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  backend_data:
+    driver: local
+  ollama_data:
+    driver: local
+
+networks:
+  awesomebot:
+    driver: bridge
