@@ -21,9 +21,9 @@ The platform was developed and tested with **Qwen 2.5 7B** as the default model.
 Clone the repo and run the setup script. It handles everything -- building containers, waiting for health checks, pulling the AI model, and verifying the install:
 
 ```bash
-git clone <repo-url>
-cd AwesomeBot
-./setup.sh
+git clone https://github.com/sec-tools/awesomebot.git
+cd awesomebot
+bash setup.sh
 ```
 
 The script will:
@@ -56,7 +56,7 @@ Open **http://localhost:3000** and log in:
 
 You can also create additional non-admin accounts via the signup page. That's it -- you're running.
 
-If you run `./setup.sh` again while services are already running, it will skip the build, check if the model is downloaded, and verify everything is healthy.
+If you run `bash setup.sh` again while services are already running, it will skip the build, check if the model is downloaded, and verify everything is healthy.
 
 ### Manual Setup
 
@@ -64,8 +64,8 @@ If you prefer to run the steps yourself:
 
 ```bash
 # 1. Build and start
-git clone <repo-url>
-cd AwesomeBot
+git clone https://github.com/sec-tools/awesomebot.git
+cd awesomebot
 docker compose up -d --build
 
 # 2. Wait for healthy (all three should show "healthy")
@@ -151,7 +151,7 @@ AwesomeBot/
 ├── docker-compose.yml          # Orchestrates all three services
 ├── setup.sh                    # Automated setup (build, pull model, verify)
 ├── reset.sh                    # Full reset (tear down and rebuild from scratch)
-├── SYSTEM_PROMPT_FORMATTED.txt # The AI's system prompt
+├── SYSTEM_PROMPT.txt # The AI's system prompt
 ├── backend/
 │   ├── Dockerfile
 │   ├── main.py                 # FastAPI entry point
@@ -293,7 +293,7 @@ docker compose down --volumes
 docker compose down --volumes --rmi all
 
 # Full reset back to fresh state (interactive script -- rebuilds and re-pulls model)
-./reset.sh
+bash reset.sh
 ```
 
 ## Troubleshooting
@@ -377,7 +377,7 @@ No. It was built as a project for learning about the security of AI platforms wi
 There's a reset script to tear everything down and rebuild from scratch as if you had just cloned the repo for the first time:
 
 ```bash
-./reset.sh
+bash reset.sh
 ```
 
 The script will:

@@ -8,11 +8,11 @@ import uuid
 
 
 async def init_system_settings(db: AsyncSession) -> None:
-    """Initialize system settings from SYSTEM_PROMPT_FORMATTED.txt and defaults"""
+    """Initialize system settings from SYSTEM_PROMPT.txt and defaults"""
     
     # Path to system prompt file (relative to project root)
     project_root = Path(__file__).parent.parent.parent.parent
-    system_prompt_file = project_root / "SYSTEM_PROMPT_FORMATTED.txt"
+    system_prompt_file = project_root / "SYSTEM_PROMPT.txt"
     
     # Load system prompt from file if it exists
     default_system_prompt = "You are a helpful AI assistant. Be concise and accurate."

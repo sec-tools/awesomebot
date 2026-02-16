@@ -44,7 +44,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY backend/ .
 
 # Copy system prompt from project root (init_settings.py resolves to / in container)
-COPY SYSTEM_PROMPT_FORMATTED.txt /SYSTEM_PROMPT_FORMATTED.txt
+COPY SYSTEM_PROMPT.txt /SYSTEM_PROMPT.txt
 
 # Create data directories
 RUN mkdir -p /app/data /app/data/uploads /app/data/chroma_db
