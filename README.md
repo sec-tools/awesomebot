@@ -1,5 +1,7 @@
 # AwesomeBot
 
+![awesomebot-logo](https://github.com/user-attachments/assets/20304c2a-6669-4d55-b4d8-a3c8855ce946)
+
 > **This application was created exclusively for security education and research. It is NOT a chatbot platform. Do not deploy on public networks or use with real user data.**
 
 AwesomeBot is an AI chatbot that contains many bugs and built for the purpose of bug hunting and security research. It is a full-stack chat application powered by a local LLM that contains security vulnerabilities for you to discover, exploit, and learn from in a local test environment.
